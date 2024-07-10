@@ -19,4 +19,4 @@ This mesh-based surface then can be used to extract phenotypic traits like leaf 
 <br>
 **Visualization:** Tools for visualizing both the raw and processed point clouds and meshes to facilitate analysis.
 
-![Workflow](https://github.com/lzabawa/CropMesh/assets/28858970/529bdb42-facd-4d2c-add9-bd6c7d1e63d7)
+![Workflow](https://github.com/Engineering-Geodesy-Bonn/CropMesh/assets/28858970/b9fb3d64-f9ad-4b3a-b313-dbff54697836)
