@@ -175,6 +175,7 @@ def CalculateLeafAngles(Mesh, Path, name):
     angles_z = []
     angles_a = []
     normalization = []
+    triangle_area = []
 
     vert, vert_normals, tria, tria_normals = CalculateTriangleVertexNormals(Mesh)
     TriangleArea = CalculateTriangleSurface(Mesh)
@@ -182,6 +183,7 @@ def CalculateLeafAngles(Mesh, Path, name):
     length = np.shape(tria_normals)
 
     for i in range(length[0]):
+        triangle_area.append(TriangleArea[i])
         norm = TriangleArea[i] / Area
         angle_zenith = abs(math.degrees(math.acos(tria_normals[i][2])))  # zenith angle z component of normal vector
         angle_azimuth = math.degrees(math.atan2(tria_normals[i][1], tria_normals[i][0])) % 360
@@ -193,47 +195,16 @@ def CalculateLeafAngles(Mesh, Path, name):
     median_z = np.median(angles_z)
     median_a = np.median(angles_a)
 
-    '''Plotting Zenith angle as histogram'''
-
-    # Defining Bin Number
-    NumberBinsZenith = np.arange(0, 90+2, 2)
-
-    plt.figure(figsize=(10, 5))
-    plt.hist(angles_z, density=True, bins=NumberBinsZenith, weights=normalization, color='blue')
-    plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
-    plt.xlim(0, 90)
-    plt.xlabel('Angles [°]')
-    plt.ylabel('Frequency')
-    plt.title(f'Zenith Angle')
-    plt.savefig(f'{Path}/figures/{name}_zenith.png')
-    # plt.show()
-
-    '''Plotting Azimuth angle as Polar Plot'''
-
-    # Defining Bin Number
-    Number = 72
-
-    radians = np.deg2rad(angles_a)
-    bins = np.linspace(0.0, 2 * np.pi, Number + 1)
-    n, _, _ = plt.hist(radians, density=True, bins=bins, weights=normalization, color='blue')
-
-    plt.clf()
-    width = 2 * np.pi / Number
-    ax = plt.subplot(1, 1, 1, projection='polar')
-    ax.bar(bins[:Number], n, width=width, bottom=0.0, color='blue')
-    labels = ['E', 'NE', 'N', 'NW', 'W', 'SW', 'S', 'SE']
-    values = [0, 0.25 * np.pi, 0.5 * np.pi, 0.75 * np.pi, np.pi, 1.25 * np.pi, 1.5 * np.pi, 1.75 * np.pi]
-    ax.set_xticks(values)
-    ax.set_xticklabels(labels)
-    plt.title(f'Azimuth Angle')
-    plt.savefig(f'{Path}/figures/{name}_azimuth_polar.png')
-    # plt.show()
+    results = pd.DataFrame(columns=['zenith', 'azimuth', 'triangle_area', 'normalization_factor'])
+    results['zenith'] = angles_z
+    results['azimuth'] = angles_a
+    results['triangle_area'] = triangle_area
+    results['normalization_factor'] = normalization
 
     if not os.path.exists(rf'{Path}\Files'):
         os.makedirs(rf'{Path}\Files')
 
-    np.savetxt(rf'{Path}\Files\{name}_normalization.txt', normalization)
-    np.savetxt(rf'{Path}\Files\{name}_zenith_angles.txt', angles_z)
-    np.savetxt(rf'{Path}\Files\{name}_azimuth_angles.txt', angles_a)
+    results.to_csv(rf'{Path}\Files\{name}.csv', index=False )
 
     return angles_z, median_z, angles_a, median_a
+    
