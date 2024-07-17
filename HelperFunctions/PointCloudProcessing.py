@@ -31,7 +31,7 @@ def ProcessPointCloudToMesh(path: str, filename: str, PointCloud, unit, PlotImag
 
     :param path: path for saving image
     :param filename: name for image
-    :param PointCloud: open3D PointCloud, input PointClout
+    :param PointCloud: open3D PointCloud, input PointCloud
     :param unit: unit of the point cloud
     :param PlotImage: Default=False --> Images are not plotted
     :param SaveImage: Default=False --> Images are not saved; True --> Images are saved
